@@ -1,0 +1,20 @@
+retoucheBD: software to improve digital comics for e-readers
+ 
+retoucheBD may be used for improving the orientation of an inclined image.
+
+The bash script comics2pdf.sh is used for making a .pdf file from a .cbz 
+or a .cbr file.
+
+Requirements:
+	OpenCv
+	unzip/unrar
+	pdflatex
+	
+Compiling (needs opencv):
+	make
+  
+Running:
+	./retouche_BD
+ 
+ 
+ 
