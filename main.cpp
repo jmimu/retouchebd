@@ -33,11 +33,9 @@
 using namespace std;
 
 
-int main()
+IplImage *turn_image(IplImage *img)
 {
-	string filename="image_bd2.jpg";
-    IplImage *img=cvLoadImage(filename.c_str());
-    IplImage *img_gray = cvCreateImage(cvGetSize(img), img->depth, 1);
+	IplImage *img_gray = cvCreateImage(cvGetSize(img), img->depth, 1);
     IplImage *img_output = cvCloneImage(img);
     
     //Convert into grayscale
@@ -118,11 +116,12 @@ int main()
 	mean_theta/=lines->total;
 	cout<<"Mean orientation: "<<mean_theta<<endl;
  
- 	//Call imagemagick
+ 	/* //Call imagemagick
  	ostringstream oss;
  	oss<<"convert "<<filename<<" -rotate "<<mean_theta<<" _"<<filename;
-	system(oss.str().c_str());
+	system(oss.str().c_str());*/
  	
+ 	//Draw white frame before rotating to avoid dripping
  	cvLine( img, cvPoint(0,0), cvPoint(img->width,0), CV_RGB(255,255,255));
  	cvLine( img, cvPoint(0,0), cvPoint(0,img->height), CV_RGB(255,255,255));
  	cvLine( img, cvPoint(0,img->height), cvPoint(img->width,img->height), CV_RGB(255,255,255));
@@ -142,7 +141,24 @@ int main()
 	m[5] = h*0.5f;
 	cvGetQuadrangleSubPix( img, img_turned, &M);//, 1, cvScalarAll(0));
  	
- 	cvSaveImage("toto.jpg",img_turned);
+ 	cvReleaseImage(&img_gray);
+    cvReleaseImage(&img_canny);
+    cvReleaseImage(&img_ext);
+ 	
+ 	return img_turned;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+int main()
+{
+	string filename="geekscottes_105.png";
+    IplImage *img=cvLoadImage(filename.c_str());
+    
+    IplImage *img_turned =turn_image(img);
+    
+    
+ 	cvSaveImage("toto.png",img_turned);
  	
 //-------------------------------------------------------------------------------------
  	IplImage *img_gray_turned = cvCreateImage(cvGetSize(img_turned), img_turned->depth, 1);
@@ -157,6 +173,8 @@ int main()
     cvDestroyWindow("Retouche BD");
     */
     
+    CvScalar scalar; //scalar -  place where we stock the pixel
+     
 	//Keep only the first lit pixel in y
 	int top_side_coord=-1;
 	for(int y=0; y<img_canny_turned->height; y++)
@@ -251,9 +269,9 @@ int main()
     
     //Release the IplImage (give to cvReleaseImage an IplImage** parameter).
     cvReleaseImage(&img);
- 	cvReleaseImage(&img_gray);
-    cvReleaseImage(&img_canny);
-    cvReleaseImage(&img_ext);
+ 	cvReleaseImage(&img_gray_turned);
+    cvReleaseImage(&img_canny_turned);
+    cvReleaseImage(&img_output_turned);
  	
     return 0;
 
