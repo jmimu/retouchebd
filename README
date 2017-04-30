@@ -16,5 +16,7 @@ Compiling (needs opencv):
 Running:
 	./retouche_BD
  
- 
+
+Use A4intoA5.sh to cut any A4 pdf into A5 for ereaders!
+
  
